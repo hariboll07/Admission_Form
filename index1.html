@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>stepper</title>
+  </head>
+  <style>
+    * {
+      padding: 0px;
+      margin: 0px;
+      box-sizing: border-box;
+      font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
+        sans-serif;
+    }
+    body {
+      background-color: #e0e7ff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    #container {
+      width: 600px;
+      min-height: 300px;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      padding: 30px 40px;
+      display: flex;
+      flex-direction: column;
+      margin: 50px 0;
+    }
+    /* progress section */
+    #progress {
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      margin: 50px;
+      align-items: center;
+    }
+    /* 🔵 Gray Base Line */
+    #progress::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 7%;
+      right: 7%;
+      height: 4px;
+      background-color: lightgray;
+      transform: translateY(-50%);
+      z-index: 0;
+      border-radius: 2px;
+    }
+    /* 🔵 Blue Active Line */
+    #progress::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 7%;
+      right: 7%;
+      height: 4px;
+      background-color: #19ff19;
+      transform: translateY(-50%);
+      z-index: 1;
+      border-radius: 2px;
+      width: var(--progress-width, 0%);
+      transition: width 0.4s ease;
+    }
+    /* circle formation */
+    .circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: lightgray;
+      color: #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      z-index: 2;
+      transition: all 0.4s ease;
+    }
+    .circle.active {
+      background-color: #19ff19;
+      color: white;
+      transform: scale(1.1);
+      box-shadow: 0 0 10px rgba(66, 255, 94, 0.4);
+    }
+    /* step formantion */
+    .step {
+      display: none;
+      animation: fadeIn 1s ease-in-out;
+    }
+    .step.active {
+      display: block;
+    }
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    /* 🧾 Headings */
+    h3 {
+      text-align: center;
+      color: #002366;
+      margin-bottom: 20px;
+      font-size: 22px;
+    }
+    li {
+      margin: 5px;
+      color: #003366;
+    }
+    li span {
+      color: #001e3e;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"] {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0 18px 0;
+      border: 2px solid #b9e0f8;
+      border-radius: 6px;
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="tel"]:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.4);
+    }
+    /* 🎯 Radio Buttons */
+    .radio-group {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+      margin: 10px;
+    }
+    .radio-group input[type="radio"] {
+      accent-color: #007bff;
+      transform: scale(1.2);
+      margin-right: 8px;
+      cursor: pointer;
+    }
+    .radio-group label {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 18px;
+      font-weight: 500;
+      color: #003366;
+      cursor: pointer;
+    }
+    .radio-group label:hover {
+      color: #007bff;
+    }
+    /*  Navigation Buttons */
+    .buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 25px;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 25px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+    button:hover {
+      background-color: #0056b3;
+      transform: scale(1.05);
+    }
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+  </style>
+  <body>
+    <div id="container">
+      <div id="progress">
+        <div class="circle active">1</div>
+        <div class="circle">2</div>
+        <div class="circle">3</div>
+        <div class="circle">4</div>
+        <div class="circle">5</div>
+      </div>
+      <!-- Step 1 -->
+      <div class="step active" id="step1">
+        <h3>Step 1: Personal Information</h3>
+        <label>First Name:</label>
+        <input type="text" id="fname" placeholder="First Name" />
+        <label>Last Name:</label>
+        <input type="text" id="lname" placeholder="Last Name" />
+        <label>Email Address:</label>
+        <input type="email" id="email" placeholder="Email" />
+        <label>Phone Number:</label>
+        <input type="tel" id="phone" placeholder="Phone Number" />
+      </div>
+      <!-- Step 2 -->
+      <div class="step" id="step2">
+        <h3>Step 2: Course Selection</h3>
+        <div class="radio-group">
+          <label
+            ><input type="radio" name="course" value="MERN Stack" /> MERN
+            Stack</label
+          >
+          <label
+            ><input type="radio" name="course" value="Data Science" /> Data
+            Science</label
+          >
+          <label
+            ><input type="radio" name="course" value="Python Full Stack" />
+            Python Full Stack</label
+          >
+          <label
+            ><input type="radio" name="course" value="Data Analytics" /> Data
+            Analytics</label
+          >
+          <label
+            ><input type="radio" name="course" value="Gen AI" /> Gen AI</label
+          >
+        </div>
+      </div>
+      <!-- Step 3 -->
+      <div class="step" id="step3">
+        <h3>Step 3: Address Information</h3>
+        <label>Address:</label>
+        <input type="text" id="address" placeholder="Address" />
+        <label>City:</label>
+        <input type="text" id="city" placeholder="City" />
+        <label>State:</label>
+        <input type="text" id="state" placeholder="State" />
+        <label>Zip Code:</label>
+        <input type="text" id="zip" placeholder="Zip Code" />
+      </div>
+      <!-- Step 4 -->
+      <div class="step" id="step4">
+        <h3>Step 4: Payment Type</h3>
+        <div class="radio-group">
+          <label
+            ><input type="radio" name="paymenttype" value="Full Payment" /> Full
+            Payment</label
+          >
+          <label
+            ><input type="radio" name="paymenttype" value="Installments" />
+            Installments</label
+          >
+        </div>
+      </div>
+      <div class="step" id="step5">
+        <h3>Step 5: Review & Submit</h3>
+        <p style="margin-bottom: 10px; color: blueviolet">
+          Please review your information before submitting the application.
+        </p>
+        <ul
+          style="
+            margin: 10px 20px;
+            list-style-type: none;
+            padding: 0;
+            font-size: 16px;
+          "
+        >
+          <li><strong>First Name:</strong> <span id="review-fname"></span></li>
+          <li><strong>Last Name:</strong> <span id="review-lname"></span></li>
+          <li><strong>Email:</strong> <span id="review-email"></span></li>
+          <li><strong>Phone:</strong> <span id="review-phone"></span></li>
+          <li>
+            <strong>Course Selected:</strong> <span id="review-course"></span>
+          </li>
+          <li><strong>Address:</strong> <span id="review-address"></span></li>
+          <li><strong>City:</strong> <span id="review-city"></span></li>
+          <li><strong>State:</strong> <span id="review-state"></span></li>
+          <li><strong>Zip Code:</strong> <span id="review-zip"></span></li>
+          <li>
+            <strong>Payment Type:</strong> <span id="review-paymenttype"></span>
+          </li>
+        </ul>
+      </div>
+      <div class="buttons">
+        <button id="prevBtn" onclick="changeStep(-1)" disabled>Previous</button>
+        <button id="nextBtn" onclick="changeStep(1)">Next</button>
+      </div>
+    </div>
+    <script>
+      let currentStep = 1;
+      const totalSteps = 5;
+
+      function getValues() {
+        return {
+          fname: document.getElementById("fname").value.trim(),
+          lname: document.getElementById("lname").value.trim(),
+          email: document.getElementById("email").value.trim(),
+          phone: document.getElementById("phone").value.trim(),
+          address: document.getElementById("address").value.trim(),
+          city: document.getElementById("city").value.trim(),
+          state: document.getElementById("state").value.trim(),
+          zip: document.getElementById("zip").value.trim(),
+          course:
+            document.querySelector('input[name="course"]:checked')?.value || "",
+          payment:
+            document.querySelector('input[name="paymenttype"]:checked')
+              ?.value || "",
+        };
+      }
+
+      function updateReview(values) {
+        document.getElementById("review-fname").textContent = values.fname;
+        document.getElementById("review-lname").textContent = values.lname;
+        document.getElementById("review-email").textContent = values.email;
+        document.getElementById("review-phone").textContent = values.phone;
+        document.getElementById("review-address").textContent = values.address;
+        document.getElementById("review-city").textContent = values.city;
+        document.getElementById("review-state").textContent = values.state;
+        document.getElementById("review-zip").textContent = values.zip;
+        document.getElementById("review-course").textContent = values.course;
+        document.getElementById("review-paymenttype").textContent =
+          values.payment;
+      }
+
+      function changeStep(stepChange) {
+        document
+          .getElementById(`step${currentStep}`)
+          .classList.remove("active");
+
+        currentStep += stepChange;
+        if (currentStep < 1) currentStep = 1;
+        if (currentStep > totalSteps) currentStep = totalSteps;
+
+        document.getElementById(`step${currentStep}`).classList.add("active");
+
+        const circles = document.querySelectorAll(".circle");
+        circles.forEach((circle, i) =>
+          circle.classList.toggle("active", i < currentStep)
+        );
+
+        const progress = document.querySelector("#progress");
+        const percentage = ((currentStep - 1) / (totalSteps - 1)) * 90;
+        progress.style.setProperty("--progress-width", `${percentage}%`);
+
+        document.getElementById("prevBtn").disabled = currentStep === 1;
+        const nextBtn = document.getElementById("nextBtn");
+        nextBtn.textContent = currentStep === totalSteps ? "Submit" : "Next";
+
+        if (currentStep === 5) updateReview(getValues());
+
+        if (currentStep === totalSteps) {
+          nextBtn.style.background = "green";
+          nextBtn.style.color = "black";
+          nextBtn.onclick = submitForm;
+        } else {
+          nextBtn.style.background = "#007bff";
+          nextBtn.style.color = "white";
+          nextBtn.onclick = () => changeStep(1);
+        }
+      }
+
+      function submitForm() {
+        const values = getValues();
+        if (!values.fname || !values.lname || !values.email || !values.phone) {
+          alert("⚠️ Please fill out all personal information.");
+          changeStep(1 - currentStep);
+          return;
+        }
+        if (!values.course) {
+          alert("⚠️ Please select a course.");
+          changeStep(2 - currentStep);
+          return;
+        }
+        if (!values.address || !values.city || !values.state || !values.zip) {
+          alert("⚠️ Please fill out all address information.");
+          changeStep(3 - currentStep);
+          return;
+        }
+        if (!values.payment) {
+          alert("⚠️ Please choose a payment type.");
+          changeStep(4 - currentStep);
+          return;
+        }
+        alert("✅ Form Submitted Successfully!");
+        location.reload();
+      }
+    </script>
+  </body>
+</html>
